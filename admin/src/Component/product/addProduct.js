@@ -17,10 +17,12 @@ import { listcatelog } from "../../action/catalogActions";
 import LoadingBox from "../LoadingBox";
 import MessageBox from "../MessageBox";
 import Addcatelog from "../Catelog/addCatelog";
+import { uploadimage } from "../../action/imageActions";
 
 export default function AddProduct(props) {
   const dispatch = useDispatch();
   const [itemProduct, setitemProduct] = useState({ name: "", catalog_id: "" });
+  const [image, setImage] = useState([]);
   const [open, setOpen] = React.useState(false);
   //lỗi của lấy product
   const error = useSelector((state) => state.catelogList).error;
@@ -34,6 +36,16 @@ export default function AddProduct(props) {
   }, []);
   const onSave = () => {
     console.log(itemProduct);
+  };
+  const UploadImage = (e) => {
+    e.preventDefault();
+    let data = new FormData();
+    data.append("image", image);
+    dispatch(uploadimage(data));
+    setitemProduct((itemProduct) => ({
+      ...itemProduct,
+      image_link: useSelector((state) => state.uploadImages),
+    }));
   };
   return (
     <>
@@ -183,7 +195,21 @@ export default function AddProduct(props) {
                     </Paper>
                   </Grid>
                   <Grid item xs={12} sm={12} md={3} key={2}>
-                    <Paper sx={{ p: 2 }}></Paper>
+                    <Paper sx={{ p: 2 }}>
+                      <form
+                        onSubmit={(e) => UploadImage(e)}
+                        className="create-post-form"
+                        enctype="multipart/form-data"
+                      >
+                        <input
+                          value={image}
+                          onChange={(e) => setImage(e.target.value)}
+                          type="file"
+                          name="image"
+                        />
+                        <input type="submit" />
+                      </form>
+                    </Paper>
                   </Grid>
                 </Grid>
               </Box>

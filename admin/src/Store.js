@@ -4,12 +4,14 @@ import {
   catelogAddReducer,
   catelogListReducer,
 } from "../src/reducers/catelogReducers";
+import { uploadImageReducer } from "./reducers/imageReducers";
 
 const initialState = {};
 
 const reducer = combineReducers({
   catelogList: catelogListReducer,
   catelogAdd: catelogAddReducer,
+  uploadImages: uploadImageReducer,
 });
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
