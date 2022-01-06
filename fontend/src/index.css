@@ -1,0 +1,106 @@
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  height: 100vh;
+  font-size: 1.6rem;
+  font-family: Arial, Helvetica, sans-serif;
+}
+ul {
+  padding: 0;
+}
+#root {
+  height: 100%;
+}
+/*layout*/
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    "header"
+    "main"
+    "footer";
+  grid-auto-columns: 1fr;
+  grid-template-rows: 5rem 1fr 5rem;
+  height: 100%;
+}
+header {
+  grid-area: header;
+  background-color: #203040;
+}
+main {
+  grid-area: main;
+  padding: 1rem;
+}
+footer {
+  grid-area: footer;
+  background-color: #203040;
+  color: #ffffff;
+}
+/* common */
+a {
+  text-decoration: none;
+}
+a:hover {
+  color: #ff8000;
+}
+/* header */
+header a {
+  color: #fff;
+  padding: 1rem;
+}
+a.brand {
+  color: #fff;
+  font-size: 3rem;
+  font-weight: bold;
+}
+/* card product */
+
+.ratting span {
+  color: #f0c040;
+  margin: 0.1rem;
+}
+.price {
+  font-size: 2rem;
+}
+.card-title {
+  color: blue;
+  font-weight: bold;
+}
+.ratting span:last-child {
+  color: #404040;
+}
+
+/* Alert/ */
+.success {
+  color: chartreuse;
+}
+.error {
+  color: crimson;
+}
+.alert {
+  padding: 1rem;
+  border: 0.1rem solid transparent;
+  border-radius: 0.5rem;
+}
+.alert-info {
+  color: blue;
+  background-color: #e0e0ff;
+}
+.alert-danger {
+  color: #a20;
+  background-color: #ffe0e0e0;
+}
+/* cart product */
+.badge {
+  background-color: #a20;
+  color: #fff;
+  border-radius: 100%;
+  padding: 0.5rem 0.7rem;
+  margin-left: 0.5rem;
+}
+.img-small{
+    width: 100%;
+    max-width: 5rem;
+}

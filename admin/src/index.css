@@ -1,0 +1,71 @@
+/*----------------------------------------*/
+/*  1.  Theme default CSS
+/*----------------------------------------*/
+html,
+body {
+  height: 100%;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  background-color: #f5f8fb;
+}
+
+/* mẫu from mặc định*/
+.box-right {
+  padding: 20px 0;
+}
+.review-content-section {
+  margin-top: 0px;
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-bottom: 15px;
+  background: #ff8000;
+  display: block;
+}
+.input-group.mg-b-pro-edt,
+.Field-group.mg-b-pro-edt {
+  position: relative;
+  border-collapse: separate;
+  margin-bottom: 15px;
+  display: flex;
+}
+.input-group-addon,
+.Field-group-addon {
+  background-color: #ff8000;
+  border: 1px solid #ff8000;
+  border-radius: 1px;
+  color: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  padding: 12px 12px;
+  text-align: center;
+  color: #fff;
+}
+
+/*font và màu chữ erro mặc định*/
+erro {
+  color: white;
+  padding: 0 15px;
+}
+erro-login {
+  color: red;
+}
+
+/*slide-nav*/
+.bWcVOO {
+  position: relative;
+  overflow: hidden;
+  -webkit-transition: all 0.15s;
+  transition: all 0.15s;
+  padding: 0 20px;
+  margin-left: 64px;
+}
+.eupnTP {
+  position: relative;
+  overflow: hidden;
+  -webkit-transition: all 0.15s;
+  transition: all 0.15s;
+  padding: 0 20px;
+  margin-left: 240px;
+}
+
