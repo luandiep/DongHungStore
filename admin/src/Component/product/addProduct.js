@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import MenuItem from "@mui/material/MenuItem";
+import CardMedia from "@mui/material/CardMedia";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -22,12 +23,13 @@ import { uploadimage } from "../../action/imageActions";
 export default function AddProduct(props) {
   const dispatch = useDispatch();
   const [itemProduct, setitemProduct] = useState({ name: "", catalog_id: "" });
-  const [image, setImage] = useState([]);
+  const [fileImage, setfileImage] = useState({});
   const [open, setOpen] = React.useState(false);
   //lỗi của lấy product
   const error = useSelector((state) => state.catelogList).error;
   //lỗi của thêm product
   const errors = useSelector((state) => state.catelogAdd).error;
+  const imagelink = useSelector((state) => state.uploadImages).image;
   //loading trang và danh sách sản phẩm
   const { loading, catelog } = useSelector((state) => state.catelogList);
 
@@ -40,11 +42,11 @@ export default function AddProduct(props) {
   const UploadImage = (e) => {
     e.preventDefault();
     let data = new FormData();
-    data.append("image", image);
+    data.append("image", fileImage);
     dispatch(uploadimage(data));
     setitemProduct((itemProduct) => ({
       ...itemProduct,
-      image_link: useSelector((state) => state.uploadImages),
+      image_link: imagelink,
     }));
   };
   return (
@@ -196,19 +198,42 @@ export default function AddProduct(props) {
                   </Grid>
                   <Grid item xs={12} sm={12} md={3} key={2}>
                     <Paper sx={{ p: 2 }}>
-                      <form
-                        onSubmit={(e) => UploadImage(e)}
-                        className="create-post-form"
-                        enctype="multipart/form-data"
-                      >
-                        <input
-                          value={image}
-                          onChange={(e) => setImage(e.target.value)}
-                          type="file"
-                          name="image"
-                        />
-                        <input type="submit" />
-                      </form>
+                      <Grid item xs={12} sm={12} md={12} key={1}>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            "& > :not(style)": { m: 1 },
+                          }}
+                        >
+                          <CardMedia
+                            component="img"
+                            height="200"
+                            image={"http://localhost:3001/" + imagelink}
+                            alt="green iguana"
+                          />
+                        </Box>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={12} key={2}>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            "& > :not(style)": { m: 1 },
+                          }}
+                        >
+                          <form
+                            onSubmit={(e) => UploadImage(e)}
+                            className="create-post-form"
+                            enctype="multipart/form-data"
+                          >
+                            <input
+                              onChange={(e) => setfileImage(e.target.files[0])}
+                              type="file"
+                              name="image"
+                            />
+                            <input type="submit" />
+                          </form>
+                        </Box>
+                      </Grid>
                     </Paper>
                   </Grid>
                 </Grid>

@@ -9,7 +9,7 @@ export const uploadImageReducer = (state = { image: [] }, action) => {
     case UPLOAD_IMAGE_REQUEST:
       return { loading: true };
     case UPLOAD_IMAGE_SUCCESS:
-      return { loading: false, catelog: action.payload };
+      return { loading: false, image: action.payload };
     case UPLOAD_IMAGE_FAIL:
       return { loading: false, error: action.payload };
     default:

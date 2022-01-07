@@ -1,5 +1,6 @@
 const express = require("express");
 const fs = require("fs");
+
 // import data from "./data.js";
 const app = express();
 const cors = require("cors");
@@ -20,16 +21,15 @@ var upload = multer({
   limits: { fileSize: maxSize },
   fileFilter: function (req, file, cb) {
     if (file.mimetype == "image/png" || file.mimetype == "image/jpeg") {
-      const a = "/Images/" + file.originalname;
       fs.exists("Images/" + file.originalname, function (exists) {
         if (exists) {
-          cb(null, false);
+          cb(null, true);
         } else {
           cb(null, true);
         }
       });
     } else {
-      return cb(null, false, new Error("I don't have a clue!"));
+      return cb(null, false, new Error("type not invalid"));
     }
   },
 }).single("image");
@@ -51,14 +51,15 @@ app.use("/api/product", productRouter);
 
 app.post("/upload", function (req, res, next) {
   upload(req, res, function (err) {
-    if (err) {
-      return res.end("some error");
-    } else {
-      res.json(req.file.filename);
+    if (err instanceof multer.MulterError) {
+      return res.send(err);
+    } else if (err) {
+      return res.send(err);
     }
+    res.json(req.file.path);
   });
 });
-
+app.use(express.static(__dirname + "/uploads"));
 db.sequelize.sync().then(() => {
   app.listen(3001, () => {
     console.log("server at http://localhost:3001");
