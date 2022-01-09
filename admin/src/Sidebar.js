@@ -14,12 +14,13 @@ import Home from "./Component/Home/Home";
 import ListProduct from "./Component/product/listProduct";
 import AddProduct from "./Component/product/addProduct";
 import "../src/css/fragment.css";
-import Register from "./Component/Register/register";
-import { removeUserSession } from "./Utils/Common";
+import { useDispatch } from "react-redux";
+import { logout } from "./action/loginActions";
 export default function Sidebar(props) {
+  const dispatch = useDispatch();
   const [showtoggle, setShowtoggle] = React.useState(false);
   function SignOut() {
-    removeUserSession();
+    dispatch(logout());
     props.history.push("/login");
   }
   function ischecktoggle(event) {

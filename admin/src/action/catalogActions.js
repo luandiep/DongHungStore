@@ -38,6 +38,6 @@ export const addcatalog = (body) => async (dispatch) => {
     );
     dispatch({ type: CATALOG_ADD_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: CATALOG_ADD_FAIL, payload: error.response.data });
+    dispatch({ type: CATALOG_ADD_FAIL, payload: error });
   }
 };

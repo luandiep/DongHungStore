@@ -1,43 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../css/Login/login.css";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import axios from "axios";
 import { setUserSession } from "../../Utils/Common";
+import { useSelector, useDispatch } from "react-redux";
+import { login } from "../../action/loginActions";
 
 export default function Login(props) {
+  const dispatch = useDispatch();
   const Initilvalue = {
     username: "",
     password: "",
   };
-  const [error, setError] = useState(null);
+
+
   const validationValue = Yup.object().shape({
     username: Yup.string().required("Không được bỏ trống"),
     password: Yup.string().min(8).max(15).required(),
   });
+  const { error, response } = useSelector((state) => state.logins);
 
   function onLogin(data) {
-    axios
-      .post("http://localhost:3001/api/auth/login", data)
-      .then((response) => {
-        if (response.data.erro) {
-          setError(error.response.data.erro);
-        } else {
-          setUserSession(
-            response.data.accessToken,
-            response.data.user.username,
-            response.data.refreshToken
-          );
-          props.history.push("/");
-        }
-      })
-      .catch((erro) => {
-        if (error.response.status === 401)
-          setError(error.response.data.message);
-        else setError("Something went wrong. Please try again later.");
-      });
+    dispatch(login(data));
+
+
   }
+  useEffect(() => {
+
+    if (response) {
+
+      setUserSession(
+        response.accessToken,
+        response.user.username,
+        response.refreshToken)
+      props.history.push("/");
+
+    } else if (error) {
+      alert(error)
+
+    }
+
+  }, [error, response])
+
   return (
     <div className="login-container">
       <div className="color-line" />

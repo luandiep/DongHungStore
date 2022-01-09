@@ -9,6 +9,9 @@ export const getUser = () => {
 export const getToken = () => {
   return sessionStorage.getItem("accessToken") || null;
 };
+export const getRefReshToken = () => {
+  return sessionStorage.getItem("refreshToken") || null;
+};
 
 // remove the token and user from the session storage
 export const removeUserSession = () => {

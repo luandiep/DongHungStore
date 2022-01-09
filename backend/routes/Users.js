@@ -8,6 +8,7 @@ const authController = require("../auth/auth.controllers");
 const authMiddleware = require("../auth/auth.middlewares");
 const jwtVariable = require("../variables/jwt");
 const { validateToken } = require("../middlewares/AuthMiddlewares");
+const Users = require("../models/Users");
 router.post("/register", async (req, res) => {
   const username = req.body.username.toLowerCase();
   const user = await users.findOne({
@@ -31,7 +32,7 @@ router.post("/register", async (req, res) => {
     });
   }
 });
-router.post("/refresh", authController.refreshToken);
+routerpost("/refresh", authController.refreshToken);
 router.post("/login", async (req, res) => {
   const username = req.body.username.toLowerCase() || "test";
   const password = req.body.password || "12345";
@@ -90,17 +91,9 @@ router.post("/login", async (req, res) => {
         user,
       });
     }
-
-    // const accessToken = jwt.sign(
-    //   { username: user.username, id: user.id },
-    //   "importantsecret"
-    // );
-    // res.json({ token: accessToken, username: user.username });
   });
 });
-router.get("/auth", validateToken, async (req, res) => {
-  res.json(req);
-});
+router.get("/auth", validateToken, async (req, res) => {});
 
 const isAuth = authMiddleware.isAuth;
 

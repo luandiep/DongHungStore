@@ -1,6 +1,7 @@
 const jwtVariable = require("../variables/jwt");
 const authMethod = require("../auth/auth.methods");
 const { Users } = require("../models");
+
 exports.refreshToken = async (req, res) => {
   // Lấy access token từ header
   const accessTokenFromHeader = req.headers.x_authorization;
