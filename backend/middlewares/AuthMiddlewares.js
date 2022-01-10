@@ -17,8 +17,9 @@ const validateToken = async (req, res, next) => {
   if (!verified) {
     return res.status(401).send("Invalid Token");
   } else {
-    const dcode2 = (req.user = verified.  payload);
-    return dcode2, next();
+    const dcode1 = res.json(verified.payload);
+    const dcode2 = (req.user = verified.payload);
+    return dcode2, dcode1, next();
   }
 };
 module.exports = { validateToken };
