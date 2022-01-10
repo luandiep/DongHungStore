@@ -1,6 +1,6 @@
 const jwtVariable = require("../variables/jwt");
 const authMethod = require("../auth/auth.methods");
-const { Users } = require("../models");
+const Users = require("../models");
 
 exports.refreshToken = async (req, res) => {
   // Lấy access token từ header
@@ -31,7 +31,7 @@ exports.refreshToken = async (req, res) => {
 
   const username = decoded.payload.username; // Lấy username từ payload
 
-  const user = await Users.findOne({
+  const user = await Users.users.findOne({
     where: { username: username },
   });
   if (!user) {

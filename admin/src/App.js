@@ -1,63 +1,45 @@
 import "./App.css";
-import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import Login from "./Component/Login/login";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Register from "./Component/Register/register";
 import PrivateRoute from "./Utils/PrivateRoute";
 import PublicRoute from "./Utils/PublicRoute";
-import {
-  getRefReshToken,
-  getToken,
-  removeUserSession,
-  setUserSession,
-} from "./Utils/Common";
-import history from "./history";
-import { useDispatch, useSelector } from "react-redux";
-import { checktoken, refreshtoken } from "./action/authTokenActions";
+import { useSelector } from "react-redux";
+import { setRefReshTokenSession } from "./Utils/Common";
 
 function App(props) {
-  const dispatch = useDispatch();
-  const { error, response } = useSelector((state) => state.authToken);
-  const { error_refresh, response_refresh } = useSelector(
-    (state) => state.authToken
-  );
-  useEffect(() => {
-    const token = getToken();
-    const refreshtokens = getRefReshToken();
-    if (!token && !refreshtokens) {
-      return;
-    } else {
-      dispatch(checktoken());
-    }
+  const refreshToken = useSelector((state) => state.authrefReshToken);
 
-    if (response) {
-    } else if (error) {
-      dispatch(refreshtoken(refreshtokens));
-      if (response_refresh) {
-        setUserSession(
-          response_refresh.accessToken,
-          response_refresh.user.username,
-          response_refresh.refreshToken
-        );
-      } else if (error_refresh) {
-        alert(error_refresh);
-        removeUserSession();
-        history.push("/login"); // no longer in React Router V4
+  useEffect(() => {
+    if (refreshToken.response) {
+      if (refreshToken.response.accessToken) {
+        setRefReshTokenSession(refreshToken.response.accessToken);
       }
-      // removeUserSession();
-      // alert("hết hạn phiên làm việc" + error);
-      // history.push("/login"); // no longer in React Router V4
+    } else if (refreshToken.error) {
+      alert(refreshToken.error);
     }
-  }, [error, response]);
+    // if (error_refresh) {
+    //   alert(error_refresh);
+    //   removeUserSession();
+    //   history.push("/login"); // no longer in React Router V4
+    // }
+    // if (response_refresh) {
+    //   console.log(response_refresh);
+    //   setUserSession(
+    //     response_refresh.accessToken,
+    //     response_refresh.user.username,
+    //     response_refresh.refreshToken
+    //   );
+    // }
+  }, [refreshToken]);
 
   return (
     <BrowserRouter>
       <main>
         <Switch>
           <Route component={Register} path="/register" />
-
           <PublicRoute path="/login" component={Login} />
           <PrivateRoute path="/" component={Sidebar} />
         </Switch>
@@ -67,3 +49,4 @@ function App(props) {
 }
 
 export default App;
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7InVzZXJuYW1lIjoibHVhbmRpZXAxOEBnbWFpbC5jb20iLCJpZCI6NX0sImlhdCI6MTY0MTgwNzQ4OSwiZXhwIjoxNjQxODA3NDk5fQ.chUwfzc3uyRYcIT5I1Gc0oxlUPe37l-XSm4poDeeMFo

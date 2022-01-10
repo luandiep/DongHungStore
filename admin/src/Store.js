@@ -6,7 +6,7 @@ import {
 } from "../src/reducers/catelogReducers";
 import { uploadImageReducer } from "./reducers/imageReducers";
 import { loginReducer } from "./reducers/loginReducers";
-import { authTokenReducers } from "./reducers/authTokenReducers";
+import { authTokenReducers, refReshTokenReducers } from "./reducers/authTokenReducers";
 
 const initialState = {};
 
@@ -16,6 +16,7 @@ const reducer = combineReducers({
   uploadImages: uploadImageReducer,
   logins: loginReducer,
   authToken: authTokenReducers,
+  authrefReshToken: refReshTokenReducers,
 });
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(

@@ -8,7 +8,7 @@ const authController = require("../auth/auth.controllers");
 const authMiddleware = require("../auth/auth.middlewares");
 const jwtVariable = require("../variables/jwt");
 const { validateToken } = require("../middlewares/AuthMiddlewares");
-const Users = require("../models/Users");
+
 router.post("/register", async (req, res) => {
   const username = req.body.username.toLowerCase();
   const user = await users.findOne({
@@ -32,7 +32,7 @@ router.post("/register", async (req, res) => {
     });
   }
 });
-routerpost("/refresh", authController.refreshToken);
+router.post("/refresh", authController.refreshToken);
 router.post("/login", async (req, res) => {
   const username = req.body.username.toLowerCase() || "test";
   const password = req.body.password || "12345";

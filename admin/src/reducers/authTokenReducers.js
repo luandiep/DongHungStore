@@ -24,9 +24,9 @@ export const refReshTokenReducers = (state = {}, action) => {
     case REFRESH__TOKEN_REQUEST:
       return { loading: true };
     case REFRESH__TOKEN_SUCCESS:
-      return { loading: false, response_refresh: action.payload };
+      return { loading: false, response: action.payload };
     case REFRESH__TOKEN_FAIL:
-      return { loading: false, error_refresh: action.payload };
+      return { loading: false, error: action.payload };
     default:
       return state;
   }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useSelector } from "react-redux";
 import {
   CHECK__FAIL,
   CHECK__REQUEST,
@@ -24,6 +25,9 @@ export const checktoken = () => async (dispatch) => {
     dispatch({ type: CHECK__SUCCESS, payload: response });
   } catch (error) {
     dispatch({ type: CHECK__FAIL, payload: error.response.data });
+    if (sessionStorage.getItem("accessToken")) {
+      dispatch(refreshtoken(sessionStorage.getItem("refreshToken")));
+    }
   }
 };
 export const refreshtoken = (refreshToken) => async (dispatch) => {

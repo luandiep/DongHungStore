@@ -23,6 +23,9 @@ export const removeUserSession = () => {
 // set the token and user from the session storage
 export const setUserSession = (token, user, refreshToken) => {
   sessionStorage.setItem("accessToken", token);
-  sessionStorage.setItem("user", JSON.stringify(user));
-  sessionStorage.setItem("refreshToken", JSON.stringify(refreshToken));
+  sessionStorage.setItem("user", user);
+  sessionStorage.setItem("refreshToken", refreshToken);
+};
+export const setRefReshTokenSession = (token) => {
+  sessionStorage.setItem("accessToken", token);
 };

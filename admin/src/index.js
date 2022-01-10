@@ -7,11 +7,13 @@ import reportWebVitals from "./reportWebVitals";
 import { Router } from "react-router-dom";
 import store from "./Store";
 import { Provider } from "react-redux";
+import Check from "./Check";
 
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
       <React.StrictMode>
+        <Check />
         <App />
       </React.StrictMode>
     </Router>
