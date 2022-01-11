@@ -5,7 +5,7 @@ import {
   UPLOAD_IMAGE_SUCCESS,
 } from "../constants/imageContants";
 
-export const uploadimage = (body) => async (dispatch) => {
+export const UploadImageAction = (body) => async (dispatch) => {
   dispatch({
     type: UPLOAD_IMAGE_REQUEST,
   });

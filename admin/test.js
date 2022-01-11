@@ -18,9 +18,9 @@ import { listcatelog } from "../../action/catalogActions";
 import LoadingBox from "../LoadingBox";
 import MessageBox from "../MessageBox";
 import Addcatelog from "../Catelog/addCatelog";
+import { uploadimage } from "../../action/imageActions";
 import { useDropzone } from "react-dropzone";
-import { UploadImageAction } from "../../action/imageActions";
-import $ from "jquery";
+
 const thumbsContainer = {
   display: "block",
   marginTop: 16,
@@ -84,25 +84,6 @@ export default function AddProduct(props) {
   const imagelink = useSelector((state) => state.uploadImages).image;
   //loading trang và danh sách sản phẩm
   const { loading, catelog } = useSelector((state) => state.catelogList);
-
-  useEffect(() => {
-    dispatch(listcatelog());
-  }, []);
-  const onSave = () => {
-    console.log(itemProduct);
-  };
-
-  const UploadImage = (e) => {
-    e.preventDefault();
-    let data = new FormData();
-    data.append("image", fileImage[0]);
-    dispatch(UploadImageAction(data));
-    setitemProduct((itemProduct) => ({
-      ...itemProduct,
-      image_link: imagelink,
-    }));
-  };
-
   const [files, setFiles] = useState([]);
 
   const {
@@ -115,7 +96,6 @@ export default function AddProduct(props) {
     // accept: "image/*",
     onDrop: (acceptedFiles) => {
       console.log("accepted", acceptedFiles);
-      setfileImage(acceptedFiles);
       setFiles(
         acceptedFiles.map((file) =>
           Object.assign(file, {
@@ -123,12 +103,9 @@ export default function AddProduct(props) {
           })
         )
       );
-      // $("#imgSubmit").on("submit", function() {
-      //   alert();
-      // });
     },
   });
-  $("#imgSubmit").on("submit", function() {});
+
   const style = React.useMemo(
     () => ({
       ...baseStyle,
@@ -139,6 +116,26 @@ export default function AddProduct(props) {
     [isDragActive, isDragReject, isDragAccept]
   );
 
+  useEffect(() => {
+    // Make sure to revoke the data uris to avoid memory leaks
+    // files.forEach((file) => URL.revokeObjectURL(file.preview));
+    dispatch(listcatelog());
+  }, []);
+  const onSave = () => {
+    console.log(itemProduct);
+  };
+  const UploadImage = (e) => {
+    e.preventDefault();
+    let data = new FormData();
+    data.append("image", fileImage);
+    console.log(data);
+
+    dispatch(uploadimage(data));
+    // setitemProduct((itemProduct) => ({
+    //   ...itemProduct,
+    //   image_link: imagelink,
+    // }));
+  };
   const thumbs = files.map((file) => (
     <div style={thumb} key={file.name}>
       <div style={thumbInner}>
@@ -296,38 +293,36 @@ export default function AddProduct(props) {
                   <Grid item xs={12} sm={12} md={3} key={2}>
                     <Paper sx={{ p: 2 }}>
                       <Grid item xs={12} sm={12} md={12} key={1}>
-                        <Box>
-                          <form
-                            id="imgSubmit"
-                            name="myform"
-                            className="create-post-form"
-                            enctype="multipart/form-data"
-                          >
-                            <section className="container">
-                              <aside style={thumbsContainer}>{thumbs}</aside>
-                              <div
-                                {...getRootProps({
-                                  className: "dropzone",
-                                  style,
-                                })}
-                              >
-                                <input
-                                  type="file"
-                                  name="image"
-                                  {...getInputProps()}
-                                />
-
-                                {isDragActive ? (
-                                  <p>Drop the files here ...</p>
-                                ) : (
-                                  <p>
-                                    Drag 'n' drop some files here, or click to
-                                    select files
-                                  </p>
-                                )}
-                              </div>
-                            </section>
-                          </form>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                          }}
+                        >
+                          {/* <CardMedia
+                            component="img"
+                            height="200"
+                            image={"http://localhost:3001/" + fileImage}
+                            alt="green iguana"
+                          /> */}
+                          <section className="container">
+                            <aside style={thumbsContainer}>{thumbs}</aside>
+                            <div
+                              {...getRootProps({
+                                className: "dropzone",
+                                style,
+                              })}
+                            >
+                              <input {...getInputProps()} />
+                              {isDragActive ? (
+                                <p>Drop the files here ...</p>
+                              ) : (
+                                <p>
+                                  Drag 'n' drop some files here, or click to
+                                  select files
+                                </p>
+                              )}
+                            </div>
+                          </section>
                         </Box>
                       </Grid>
                       <Grid item xs={12} sm={12} md={12} key={2}>
@@ -337,18 +332,21 @@ export default function AddProduct(props) {
                             "& > :not(style)": { m: 1 },
                           }}
                         >
-                          {/* <form
+                          <form
                             onSubmit={(e) => UploadImage(e)}
                             className="create-post-form"
                             enctype="multipart/form-data"
                           >
                             <input
-                              onChange={(e) => setfileImage(e.target.files[0])}
+                              onChange={(e) => {
+                                console.log(e);
+                                setfileImage(e.target.files[0].name);
+                              }}
                               type="file"
                               name="image"
                             />
                             <input type="submit" />
-                          </form> */}
+                          </form>
                         </Box>
                       </Grid>
                     </Paper>
