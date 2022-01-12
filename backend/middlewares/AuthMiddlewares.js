@@ -14,7 +14,7 @@ const validateToken = async (req, res, next) => {
     accessTokenFromHeader,
     accessTokenSecret
   );
-  if (!verified) {
+  if (!verified) { 
     return res.status(401).send("Invalid Token");
   } else {
     const dcode1 = res.json(verified.payload);

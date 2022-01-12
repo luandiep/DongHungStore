@@ -1,38 +1,9 @@
 const express = require("express");
-const fs = require("fs");
+const ImageUploadProduct = require("./ImageUpload/ImageProduct");
 
 // import data from "./data.js";
 const app = express();
 const cors = require("cors");
-//upload image
-const multer = require("multer");
-const path = require("path");
-var maxSize = 1 * 1000 * 1000;
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "Images");
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
-var upload = multer({
-  storage: storage,
-  limits: { fileSize: maxSize },
-  fileFilter: function (req, file, cb) {
-    if (file.mimetype == "image/png" || file.mimetype == "image/jpeg") {
-      fs.exists("Images/" + file.originalname, function (exists) {
-        if (exists) {
-          cb(null, true);
-        } else {
-          cb(null, true);
-        }
-      });
-    } else {
-      return cb(null, false, new Error("type not invalid"));
-    }
-  },
-}).single("image");
 
 app.use(express.json());
 app.use(cors());
@@ -46,19 +17,10 @@ const usersRouter = require("./routes/Users");
 app.use("/api/auth", usersRouter);
 const catalogRouter = require("./routes/Catalog");
 app.use("/api/catalog", catalogRouter);
-const productRouter = require("./routes/Posts");
+const productRouter = require("./routes/Product");
 app.use("/api/product", productRouter);
 
-app.post("/upload", function (req, res, next) {
-  upload(req, res, function (err) {
-    if (err instanceof multer.MulterError) {
-      return res.send(err);
-    } else if (err) {
-      return res.send(err);
-    }
-    res.json(req.file.path);
-  });
-});
+app.post("/upload", ImageUploadProduct.ProductImage);
 app.use(express.static(__dirname + "/uploads"));
 db.sequelize.sync().then(() => {
   app.listen(3001, () => {

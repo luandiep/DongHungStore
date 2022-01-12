@@ -19,6 +19,10 @@ import {
 //   }
 // };
 export const addproduct = (body) => async (dispatch) => {
+  const bodydata = {
+    product: body,
+    refreshToken: sessionStorage.getItem("refreshToken"),
+  };
   dispatch({
     type: PRODUCT_ADD_REQUEST,
   });
@@ -26,7 +30,7 @@ export const addproduct = (body) => async (dispatch) => {
   try {
     const { data } = await axios.post(
       "http://localhost:3001/api/product/add",
-      body,
+      bodydata,
       {
         headers: {
           x_authorization: sessionStorage.getItem("accessToken"),

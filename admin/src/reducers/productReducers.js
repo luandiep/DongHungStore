@@ -17,12 +17,12 @@ import {
 } from "../constants/productContants";
 
 // };
-export const catelogAddReducer = (state = { product: [] }, action) => {
+export const productAddReducer = (state = {}, action) => {
   switch (action.type) {
     case PRODUCT_ADD_REQUEST:
       return { loading: true };
     case PRODUCT_ADD_SUCCESS:
-      return { loading: false, catelog: action.payload };
+      return { loading: false, response: action.payload };
     case PRODUCT_ADD_FAIL:
       return { loading: false, error: action.payload };
     default:

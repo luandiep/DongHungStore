@@ -18,142 +18,71 @@ import { listcatelog } from "../../action/catalogActions";
 import LoadingBox from "../LoadingBox";
 import MessageBox from "../MessageBox";
 import Addcatelog from "../Catelog/addCatelog";
-import { useDropzone } from "react-dropzone";
 import { UploadImageAction } from "../../action/imageActions";
-import $ from "jquery";
-const thumbsContainer = {
-  display: "block",
-  marginTop: 16,
-};
-
-const thumb = {
-  display: "block",
-  borderRadius: 2,
-  border: "1px solid #eaeaea",
-  width: "100%",
-  padding: 4,
-  boxSizing: "border-box",
-};
-
-const thumbInner = {
-  display: "block",
-  height: 200,
-};
-
-const img = {
-  display: "block",
-  width: "100%",
-  height: "100%",
-};
-
-const baseStyle = {
-  display: "block",
-  alignItems: "center",
-  padding: "20px",
-  borderWidth: 2,
-  borderRadius: 2,
-  borderColor: "#eeeeee",
-  borderStyle: "dashed",
-  backgroundColor: "#fafafa",
-  color: "#bdbdbd",
-  outline: "none",
-  transition: "border .24s ease-in-out",
-};
-
-const activeStyle = {
-  borderColor: "#2196f3",
-};
-
-const acceptStyle = {
-  borderColor: "#00e676",
-};
-
-const rejectStyle = {
-  borderColor: "#ff1744",
-};
+import { isEmpty } from "lodash";
+import ViewImage from "./viewImage";
+import { addproduct } from "../../action/productActions";
 
 export default function AddProduct(props) {
   const dispatch = useDispatch();
-  const [itemProduct, setitemProduct] = useState({ name: "", catalog_id: "" });
-  const [fileImage, setfileImage] = useState({});
+  const [itemProduct, setitemProduct] = useState({
+    name: "",
+    catalog_name: "",
+  });
+
   const [open, setOpen] = React.useState(false);
-  //lỗi của lấy product
+  //lỗi khi  lấy danh sách product
   const error = useSelector((state) => state.catelogList).error;
-  //lỗi của thêm product
-  const errors = useSelector((state) => state.catelogAdd).error;
-  const imagelink = useSelector((state) => state.uploadImages).image;
-  //loading trang và danh sách sản phẩm
+  //lỗi khi thêm catelog
+  const errorCatelog = useSelector((state) => state.catelogAdd).error;
+
+  //loading danh sách sản phẩm
   const { loading, catelog } = useSelector((state) => state.catelogList);
+
+  const { imageLink, errorImage } = useSelector((state) => state.uploadImages);
+  const addProduct = useSelector((state) => state.addProduct);
 
   useEffect(() => {
     dispatch(listcatelog());
   }, []);
-  const onSave = () => {
-    console.log(itemProduct);
-  };
 
-  const UploadImage = (e) => {
-    e.preventDefault();
-    let data = new FormData();
-    data.append("image", fileImage[0]);
-    dispatch(UploadImageAction(data));
+  useEffect(() => {
     setitemProduct((itemProduct) => ({
       ...itemProduct,
-      image_link: imagelink,
+      image_link: imageLink,
     }));
+  }, [imageLink]);
+
+  useEffect(() => {
+    if (!isEmpty(addProduct)) {
+      if (!isEmpty(addProduct.response)) {
+        alert(addProduct.response);
+      } else if (!isEmpty(addProduct.error)) {
+        alert(addProduct.error);
+      }
+    }
+  }, [addProduct]);
+
+  const onSave = () => {
+    dispatch(addproduct(itemProduct));
   };
 
-  const [files, setFiles] = useState([]);
+  function UploadImage(acceptedFiles) {
+    let data = new FormData();
+    data.append("image", acceptedFiles[0]);
+    dispatch(UploadImageAction(data));
+  }
 
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    isDragAccept,
-    isDragReject,
-  } = useDropzone({
-    // accept: "image/*",
-    onDrop: (acceptedFiles) => {
-      console.log("accepted", acceptedFiles);
-      setfileImage(acceptedFiles);
-      setFiles(
-        acceptedFiles.map((file) =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          })
-        )
-      );
-      // $("#imgSubmit").on("submit", function() {
-      //   alert();
-      // });
-    },
-  });
-  $("#imgSubmit").on("submit", function() {});
-  const style = React.useMemo(
-    () => ({
-      ...baseStyle,
-      ...(isDragActive ? activeStyle : {}),
-      ...(isDragAccept ? acceptStyle : {}),
-      ...(isDragReject ? rejectStyle : {}),
-    }),
-    [isDragActive, isDragReject, isDragAccept]
-  );
-
-  const thumbs = files.map((file) => (
-    <div style={thumb} key={file.name}>
-      <div style={thumbInner}>
-        <img alt="selected" src={file.preview} style={img} />
-      </div>
-    </div>
-  ));
   return (
     <>
       {loading ? (
         <LoadingBox />
       ) : error ? (
         <MessageBox variant="danger">{error}</MessageBox>
-      ) : errors ? (
-        <MessageBox variant="danger">{errors}</MessageBox>
+      ) : errorCatelog ? (
+        <MessageBox variant="danger">{errorCatelog}</MessageBox>
+      ) : errorImage ? (
+        <MessageBox variant="danger">{errorImage}</MessageBox>
       ) : (
         <div>
           <h2>Thêm sản phẩm</h2>
@@ -212,13 +141,16 @@ export default function AddProduct(props) {
                                   open={open}
                                   onClose={() => setOpen(false)}
                                   onOpen={() => setOpen(true)}
-                                  value={itemProduct.catalog_id}
+                                  value={itemProduct.catalog_name}
                                   onChange={(e) => {
                                     setitemProduct((itemProduct) => ({
                                       ...itemProduct,
                                       catalog_id: catelog.find(
                                         (x) => x.name === e.target.value
                                       ).id,
+                                      catalog_name: catelog.find(
+                                        (x) => x.name === e.target.value
+                                      ).name,
                                     }));
                                     console.log(e);
                                   }}
@@ -228,7 +160,7 @@ export default function AddProduct(props) {
                                   </MenuItem>
                                   {catelog.map((item, index) => (
                                     <MenuItem
-                                      name={item.id}
+                                      name={item.name}
                                       key={item.id}
                                       value={item.name}
                                     >
@@ -297,37 +229,7 @@ export default function AddProduct(props) {
                     <Paper sx={{ p: 2 }}>
                       <Grid item xs={12} sm={12} md={12} key={1}>
                         <Box>
-                          <form
-                            id="imgSubmit"
-                            name="myform"
-                            className="create-post-form"
-                            enctype="multipart/form-data"
-                          >
-                            <section className="container">
-                              <aside style={thumbsContainer}>{thumbs}</aside>
-                              <div
-                                {...getRootProps({
-                                  className: "dropzone",
-                                  style,
-                                })}
-                              >
-                                <input
-                                  type="file"
-                                  name="image"
-                                  {...getInputProps()}
-                                />
-
-                                {isDragActive ? (
-                                  <p>Drop the files here ...</p>
-                                ) : (
-                                  <p>
-                                    Drag 'n' drop some files here, or click to
-                                    select files
-                                  </p>
-                                )}
-                              </div>
-                            </section>
-                          </form>
+                          <ViewImage uploadhanld={UploadImage} />
                         </Box>
                       </Grid>
                       <Grid item xs={12} sm={12} md={12} key={2}>
@@ -336,20 +238,7 @@ export default function AddProduct(props) {
                             alignItems: "center",
                             "& > :not(style)": { m: 1 },
                           }}
-                        >
-                          {/* <form
-                            onSubmit={(e) => UploadImage(e)}
-                            className="create-post-form"
-                            enctype="multipart/form-data"
-                          >
-                            <input
-                              onChange={(e) => setfileImage(e.target.files[0])}
-                              type="file"
-                              name="image"
-                            />
-                            <input type="submit" />
-                          </form> */}
-                        </Box>
+                        ></Box>
                       </Grid>
                     </Paper>
                   </Grid>
