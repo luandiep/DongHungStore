@@ -15,10 +15,12 @@ const postRouter = require("./routes/Posts");
 app.use("/api/posts", postRouter);
 const usersRouter = require("./routes/Users");
 app.use("/api/auth", usersRouter);
-const catalogRouter = require("./routes/Catalog");
-app.use("/api/catalog", catalogRouter);
+const catalogRouter = require("./routes/Category");
+app.use("/api/category", catalogRouter);
 const productRouter = require("./routes/Product");
 app.use("/api/product", productRouter);
+const unitRouter = require("./routes/Unit");
+app.use("/api/unit", unitRouter);
 
 app.post("/upload", ImageUploadProduct.ProductImage);
 app.use(express.static(__dirname + "/uploads"));

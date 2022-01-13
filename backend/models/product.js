@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: 'catalog',
+        model: 'category',
         key: 'id'
       }
     },
@@ -34,6 +34,18 @@ module.exports = function(sequelize, DataTypes) {
     image_list: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    view: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    unit_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'unit',
+        key: 'id'
+      }
     }
   }, {
     sequelize,
@@ -53,6 +65,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "catalog_id" },
+        ]
+      },
+      {
+        name: "unit_id_idx",
+        using: "BTREE",
+        fields: [
+          { name: "unit_id" },
         ]
       },
     ]

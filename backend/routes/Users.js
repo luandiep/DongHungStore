@@ -14,8 +14,9 @@ router.post("/register", async (req, res) => {
   const user = await users.findOne({
     where: { username: username },
   });
-  if (user) res.status(409).send("Tên tài khoản đã tồn tại.");
-  else {
+  if (user) {
+    return res.status(401).send("Tên tài khoản đã tồn tại.");
+  } else {
     bcrypt.hash(req.body.password, 10).then((hash) => {
       const createUser = users.create({
         username: username,
@@ -28,6 +29,7 @@ router.post("/register", async (req, res) => {
       }
       return res.send({
         username,
+        user,
       });
     });
   }
@@ -71,9 +73,10 @@ router.post("/login", async (req, res) => {
         .then((result) => {
           return res.json({
             msg: "Đăng nhập thành công.",
+            user: user.username,
             accessToken,
             refreshToken,
-            user,
+            users,
           });
         })
         .catch((err) => {
@@ -86,9 +89,10 @@ router.post("/login", async (req, res) => {
       refreshToken = user.refreshToken;
       return res.json({
         msg: "Đăng nhập thành công.",
+        user: user.username,
         accessToken,
         refreshToken,
-        user,
+        users,
       });
     }
   });

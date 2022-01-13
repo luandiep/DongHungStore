@@ -22,7 +22,9 @@ import { UploadImageAction } from "../../action/imageActions";
 import { isEmpty } from "lodash";
 import ViewImage from "./viewImage";
 import { addproduct } from "../../action/productActions";
-
+import * as Yup from "yup";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { FormHelperText } from "@mui/material";
 export default function AddProduct(props) {
   const dispatch = useDispatch();
   const [itemProduct, setitemProduct] = useState({
@@ -63,8 +65,9 @@ export default function AddProduct(props) {
     }
   }, [addProduct]);
 
-  const onSave = () => {
-    dispatch(addproduct(itemProduct));
+  const onSave = (data) => {
+    console.log(data);
+    // dispatch(addproduct(itemProduct));
   };
 
   function UploadImage(acceptedFiles) {
@@ -72,7 +75,10 @@ export default function AddProduct(props) {
     data.append("image", acceptedFiles[0]);
     dispatch(UploadImageAction(data));
   }
-
+  const validationValue = Yup.object().shape({
+    name: Yup.string().required("Tên không được bỏ trống"),
+    catalog_name: Yup.string().required("Danh mục không được bỏ trống"),
+  });
   return (
     <>
       {loading ? (
@@ -97,131 +103,147 @@ export default function AddProduct(props) {
                   <Grid item xs={12} sm={12} md={9} key={1}>
                     <Paper sx={{ p: 2 }}>
                       <Box sx={{ flexGrow: 1 }}>
-                        <Grid
-                          container
-                          spacing={{ xs: 2, md: 2 }}
-                          columns={{ xs: 4, sm: 8, md: 12 }}
+                        <Formik
+                          initialValues={itemProduct}
+                          onSubmit={onSave}
+                          validationSchema={validationValue}
                         >
-                          <Grid item xs={12} sm={12} md={6} key={1}>
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                "& > :not(style)": { m: 1 },
-                              }}
+                          <Form id="AddProduct">
+                            <Grid
+                              container
+                              spacing={{ xs: 2, md: 2 }}
+                              columns={{ xs: 4, sm: 8, md: 12 }}
                             >
-                              <TextField
-                                size="small"
-                                helperText="Vui lòng nhập tên sản phẩm"
-                                fullWidth
-                                label="Nhập tên sản phẩm"
-                                id="fullWidth"
-                                name="name"
-                                onChange={(e) => {
-                                  setitemProduct((itemProduct) => ({
-                                    ...itemProduct,
-                                    name: e.target.value,
-                                  }));
-                                }}
-                              />
-                            </Box>
-                          </Grid>
-                          <Grid item xs={12} sm={12} md={6} key={2}>
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                "& > :not(style)": { m: 1 },
-                              }}
-                            >
-                              <FormControl fullWidth sx={{ m: 1, mt: 3 }}>
-                                <Select
-                                  size="small"
-                                  displayEmpty
-                                  open={open}
-                                  onClose={() => setOpen(false)}
-                                  onOpen={() => setOpen(true)}
-                                  value={itemProduct.catalog_name}
-                                  onChange={(e) => {
-                                    setitemProduct((itemProduct) => ({
-                                      ...itemProduct,
-                                      catalog_id: catelog.find(
-                                        (x) => x.name === e.target.value
-                                      ).id,
-                                      catalog_name: catelog.find(
-                                        (x) => x.name === e.target.value
-                                      ).name,
-                                    }));
-                                    console.log(e);
+                              <Grid item xs={12} sm={12} md={6} key={1}>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    "& > :not(style)": { m: 1 },
                                   }}
                                 >
-                                  <MenuItem disabled value="">
-                                    <em>Chọn danh mục</em>
-                                  </MenuItem>
-                                  {catelog.map((item, index) => (
-                                    <MenuItem
-                                      name={item.name}
-                                      key={item.id}
-                                      value={item.name}
+                                  <Field
+                                    className="form-control"
+                                    type="text"
+                                    placeholder="Nhập tên sản phẩm"
+                                    title="Nhập tên sản phẩm"
+                                    id="name"
+                                    type="text"
+                                    name="name"
+                                  />
+                                </Box>
+                                <span className="help-block small">
+                                  <ErrorMessage
+                                    name="name"
+                                    component="erro-login"
+                                  />
+                                </span>
+                              </Grid>
+                              <Grid item xs={12} sm={12} md={6} key={2}>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    "& > :not(style)": { m: 1 },
+                                  }}
+                                >
+                                  <FormControl fullWidth sx={{ m: 1, mt: 3 }}>
+                                    <Select
+                                      name="catelog"
+                                      id="catalog_name"
+                                      size="small"
+                                      displayEmpty
+                                      open={open}
+                                      onClose={() => setOpen(false)}
+                                      onOpen={() => setOpen(true)}
+                                      value={itemProduct.catalog_name}
+                                      onChange={(e) => {
+                                        setitemProduct((itemProduct) => ({
+                                          ...itemProduct,
+                                          catalog_id: catelog.find(
+                                            (x) => x.name === e.target.value
+                                          ).id,
+                                          catalog_name: catelog.find(
+                                            (x) => x.name === e.target.value
+                                          ).name,
+                                        }));
+                                        console.log(e);
+                                      }}
                                     >
-                                      {item.name}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                              </FormControl>
-                              <Addcatelog />
-                            </Box>
-                          </Grid>
+                                      <MenuItem disabled value="">
+                                        <em>Chọn danh mục</em>
+                                      </MenuItem>
+                                      {catelog.map((item, index) => (
+                                        <MenuItem
+                                          name={item.name}
+                                          key={item.id}
+                                          value={item.name}
+                                        >
+                                          {item.name}
+                                        </MenuItem>
+                                      ))}
+                                    </Select>
+                                    <FormHelperText>
+                                      <span className="help-block small">
+                                        <ErrorMessage
+                                          name="catalog_name"
+                                          component="erro-login"
+                                        />
+                                      </span>
+                                    </FormHelperText>
+                                  </FormControl>
+                                  <Addcatelog />
+                                </Box>
+                              </Grid>
 
-                          <Grid item xs={12} sm={12} md={12} key={3}>
-                            <Box
-                              sx={{
-                                alignItems: "center",
-                                "& > :not(style)": { m: 1 },
-                              }}
-                            >
-                              <CKEditor
-                                editor={ClassicEditor}
-                                onReady={(editor) => {
-                                  // You can store the "editor" and use when it is needed.
-                                  console.log(
-                                    "Editor is ready to use!",
-                                    editor
-                                  );
-                                }}
-                                onChange={(event, editor) => {
-                                  const data = editor.getData();
-                                  console.log({ event, editor, data });
-                                  setitemProduct((itemProduct) => ({
-                                    ...itemProduct,
-                                    content: data,
-                                  }));
-                                }}
-                                onBlur={(event, editor) => {
-                                  console.log("Blur.", editor);
-                                }}
-                                onFocus={(event, editor) => {
-                                  console.log("Focus.", editor);
-                                }}
-                              />
-                            </Box>
-                          </Grid>
-                          <Grid item xs={12} sm={12} md={12} key={4}>
-                            <Box
-                              sx={{
-                                alignItems: "center",
-                                "& > :not(style)": { m: 1 },
-                              }}
-                            >
-                              <Button
-                                onClick={() => onSave()}
-                                variant="contained"
-                              >
-                                Lưu
-                              </Button>
-                            </Box>
-                          </Grid>
-                        </Grid>
+                              <Grid item xs={12} sm={12} md={12} key={3}>
+                                <Box
+                                  sx={{
+                                    alignItems: "center",
+                                    "& > :not(style)": { m: 1 },
+                                  }}
+                                >
+                                  <CKEditor
+                                    editor={ClassicEditor}
+                                    onReady={(editor) => {
+                                      // You can store the "editor" and use when it is needed.
+                                      console.log(
+                                        "Editor is ready to use!",
+                                        editor
+                                      );
+                                    }}
+                                    onChange={(event, editor) => {
+                                      const data = editor.getData();
+                                      console.log({ event, editor, data });
+                                      setitemProduct((itemProduct) => ({
+                                        ...itemProduct,
+                                        content: data,
+                                      }));
+                                    }}
+                                    onBlur={(event, editor) => {
+                                      console.log("Blur.", editor);
+                                    }}
+                                    onFocus={(event, editor) => {
+                                      console.log("Focus.", editor);
+                                    }}
+                                  />
+                                </Box>
+                              </Grid>
+                              <Grid item xs={12} sm={12} md={12} key={4}>
+                                <Box
+                                  sx={{
+                                    alignItems: "center",
+                                    "& > :not(style)": { m: 1 },
+                                  }}
+                                >
+                                  <Button type="submit" variant="contained">
+                                    Lưu
+                                  </Button>
+                                </Box>
+                              </Grid>
+                            </Grid>
+                          </Form>
+                        </Formik>
                       </Box>
                     </Paper>
                   </Grid>
