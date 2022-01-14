@@ -1,13 +1,13 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('product', {
+  return sequelize.define('subcategory', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    category_id: {
+    id_category: {
       type: DataTypes.STRING(50),
       allowNull: false,
       references: {
@@ -15,41 +15,21 @@ module.exports = function(sequelize, DataTypes) {
         key: 'id_category'
       }
     },
-    name: {
-      type: DataTypes.STRING(100),
-      allowNull: false
-    },
-    price: {
-      type: DataTypes.DECIMAL(15,4),
-      allowNull: true
-    },
-    content: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    image_link: {
+    id_subcategory: {
       type: DataTypes.STRING(50),
-      allowNull: true
-    },
-    image_list: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    view: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    unit_id: {
-      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'unit',
-        key: 'id'
+        model: 'category',
+        key: 'id_category'
       }
+    },
+    description: {
+      type: DataTypes.STRING(100),
+      allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'product',
+    tableName: 'subcategory',
     timestamps: false,
     indexes: [
       {
@@ -61,17 +41,17 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "unit_id_idx",
+        name: "id_category_idx",
         using: "BTREE",
         fields: [
-          { name: "unit_id" },
+          { name: "id_category" },
         ]
       },
       {
-        name: "category_id_idx",
+        name: "id_subcategory_idx",
         using: "BTREE",
         fields: [
-          { name: "category_id" },
+          { name: "id_subcategory" },
         ]
       },
     ]

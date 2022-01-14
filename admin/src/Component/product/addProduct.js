@@ -45,7 +45,7 @@ export default function AddProduct(props) {
   const addProduct = useSelector((state) => state.addProduct);
 
   useEffect(() => {
-    dispatch(listcatelog());
+    // dispatch(listcatelog());
   }, []);
 
   useEffect(() => {
