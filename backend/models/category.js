@@ -9,6 +9,10 @@ module.exports = function(sequelize, DataTypes) {
     name: {
       type: DataTypes.STRING(128),
       allowNull: false
+    },
+    parentID: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {
     sequelize,

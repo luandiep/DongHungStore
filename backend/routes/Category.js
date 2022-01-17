@@ -9,7 +9,20 @@ const { parse } = require("../ModelMapper/categoryMapper");
 const Op = Sequelize.Op;
 
 router.get("/getall", async (req, res) => {
-  const lisOfPosts = await category.findAll();
+  const lisOfPosts = await category.findAll({
+    raw: true,
+    nest: true,
+  });
+  lisOfPosts.forEach((element, index) => {
+    if (element.parentID > 0) {
+      lisOfPosts[index].space = "";
+      for (let i = 0; i < element.parentID; i++) {
+        lisOfPosts[index].space += "\u00A0 \u00A0 ";
+      }
+    } else {
+      lisOfPosts[index].space = "";
+    }
+  });
   res.json(lisOfPosts);
 });
 router.get("/getalls", async (req, res) => {
@@ -27,22 +40,37 @@ router.post("/add", validateToken, async (req, res) => {
   const categoryModel = parse(req.body);
   if (!categoryModel) return res.status(400).send("Bad Request");
   else {
-    const categoryModel = await category.findOne({
-      where: { name: categoryModel.name },
+    const lisOfPosts = await category.findOne({
+      where: { id_category: categoryModel.id_category },
     });
 
-    if (categoryModel) {
-      res.status(400).send("Danh  mục đã tồn tại");
+    if (lisOfPosts) {
+      res.status(400).send("Danh mục đã tồn tại");
     } else {
-      await category.create(categoryModel);
       if (categoryModel.id_subcategory) {
-        subcategory.create({
-          id_category: categoryModel.id_subcategory,
-          id_subcategory: categoryModel.id_category,
+        const itemCategori = await category.findOne({
+          where: { id_category: categoryModel.id_subcategory },
         });
+        if (itemCategori) {
+          categoryModel.parentID = itemCategori.parentID + 1;
+          await category.create(categoryModel);
+          subcategory.create({
+            id_category: categoryModel.id_subcategory,
+            id_subcategory: categoryModel.id_category,
+          });
+        }
+      } else {
+        categoryModel.parentID = 0;
+        await category.create(categoryModel);
       }
-      res.send("oke");
+      res.status(200).send("OK");
     }
+    //   res.send("oke");
+    // }
+
+    // const categoryModel = await category.findOne({
+    //   where: { name: categoryModel.name },
+    // });
   }
 });
 
