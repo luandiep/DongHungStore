@@ -7,6 +7,10 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
+    sku: {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
     category_id: {
       type: DataTypes.STRING(50),
       allowNull: false,
