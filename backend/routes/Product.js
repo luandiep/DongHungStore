@@ -71,7 +71,9 @@ router.get('/getall', async (req, res) => {
 })
 router.get('/getbyid', async (req, res) => {
     await product
-        .findById(req.query.id)
+        .findOne({
+            where: { id: req.query.id },
+        })
         .then((response) => {
             if (response) {
                 res.status(200).json(response)
