@@ -2,7 +2,8 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('category', {
     id_category: {
-      type: DataTypes.STRING(50),
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
@@ -13,6 +14,10 @@ module.exports = function(sequelize, DataTypes) {
     parentID: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    level: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,

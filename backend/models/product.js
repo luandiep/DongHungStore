@@ -13,11 +13,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     category_id: {
       type: DataTypes.STRING(50),
-      allowNull: false,
-      references: {
-        model: 'category',
-        key: 'id_category'
-      }
+      allowNull: false
     },
     name: {
       type: DataTypes.STRING(100),
@@ -69,13 +65,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "unit_id" },
-        ]
-      },
-      {
-        name: "category_id_idx",
-        using: "BTREE",
-        fields: [
-          { name: "category_id" },
         ]
       },
     ]
