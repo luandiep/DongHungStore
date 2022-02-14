@@ -1,3 +1,3 @@
 var mapper = require('js-model-mapper')
-const parse = mapper(['id_category', 'name', 'parentID'])
+const parse = mapper(['Id','ParentId','Code','Name','Grade'])
 exports.parse = parse

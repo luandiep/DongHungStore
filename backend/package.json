@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon --inspect index.js",
     "dev": "node ./bin/www",
-    "update-models": "npx sequelize-auto -o './models' -d dbdonghung -h localhost -u root -p 3306 -x 12345678 -e mysql"
+    "update-models": "npx sequelize-auto -o './models' -d dbdonghung -h localhost -u root -p 3306 -x 123456 -e mysql"
   },
   "dependencies": {
     "@sentry/node": "^6.16.1",
